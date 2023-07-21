@@ -1,12 +1,12 @@
 import { useState } from "react";
 import { Container, Modal as MUIModal, Typography, Box, Button as MUIButton } from "@mui/material"
 import { useModal } from "../context/ModalContext"
-import { Collection, useLocalStorage } from "../hooks";
 import Button from "./Button";
 import TextField from "./TextField";
 import { useAlert } from "../context/AlertContext";
 import { findAnime } from "../utils/helpers";
 import { useNavigate } from "react-router-dom";
+import { useLocalStorageCtx } from "../context/LocalStorageContext";
 
 // alphanumeric & underscore
 const REGEX = /^\w+$/;
@@ -15,16 +15,17 @@ export default function Modal() {
   const { isOpen, setOpen, item } = useModal();
   const { setOpenAlert } = useAlert();
   const navigate = useNavigate();
-  const [collection, setCollection] = useLocalStorage("COLLECTION", { } as Collection);
+  const { getValue, setValue } = useLocalStorageCtx();
   const [isCreate, setIsCreate] = useState(false);
   const [name, setName] = useState("");
   const error = !REGEX.test(name);
+  const collection = getValue();
   
 
   const handleAction = () => {
     if (!isCreate) setIsCreate(true);
     else {
-      setCollection({ [name]: { } });
+      setValue({ [name]: { } });
       setIsCreate(false);
     }
   }
@@ -35,7 +36,7 @@ export default function Modal() {
     if (alreadyInCol) {
       setOpenAlert(true, { title: 'Failed', severity: 'error', children: `This anime failed to added to ${col} because it's already in it` });
     } else {
-      setCollection({ ...collection, [col]: { ...collection[col], [item.id]: item }});
+      setValue({ ...collection, [col]: { ...collection[col], [item.id]: item }});
       setOpenAlert(true, { title: 'Sucess', severity: 'success', children: `This anime success to added to ${col}` });
       setOpen(false);
     }

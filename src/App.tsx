@@ -5,6 +5,7 @@ import { ApolloClient, InMemoryCache, ApolloProvider } from '@apollo/client';
 import { offsetLimitPagination } from "@apollo/client/utilities";
 import { ModalProvider } from "./context/ModalContext";
 import { AlertProvider } from "./context/AlertContext";
+import { LocalStorageProvider } from "./context/LocalStorageContext";
 
 
 const client = new ApolloClient({
@@ -45,7 +46,9 @@ function App() {
       <ModalProvider>
         <ThemeProvider theme={theme}>
           <AlertProvider>
-            <RouterProvider router={router} />
+            <LocalStorageProvider>
+              <RouterProvider router={router} />
+            </LocalStorageProvider>
           </AlertProvider>
         </ThemeProvider>
       </ModalProvider>

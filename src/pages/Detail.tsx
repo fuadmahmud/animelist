@@ -1,10 +1,12 @@
 import { useQuery } from "@apollo/client";
-import { useParams } from "react-router-dom"
+import { Link, useParams } from "react-router-dom"
 import { GET_DETAIL_ANIME } from "../query";
 import styled from "@emotion/styled";
 import { Container, Typography } from "@mui/material";
 import Button from "../components/Button";
 import { useModal } from "../context/ModalContext";
+import { Collection, useLocalStorage } from "../hooks";
+import { findInCollection } from "../utils/helpers";
 
 export type DetailAnime = {
   id: number;
@@ -46,7 +48,9 @@ export default function Detail() {
   const { id } = useParams();
   const { data, loading } = useQuery(GET_DETAIL_ANIME, { variables: { id } });
   const { setOpen, setItem } = useModal();
+  const [collection] = useLocalStorage("COLLECTION", {} as Collection)
   const detail: DetailAnime = data?.Media || {};
+  const inCollectionList = findInCollection(collection, parseInt(id || ''));
   
   return (
     <Wrapper>
@@ -72,6 +76,13 @@ export default function Detail() {
         <div style={{ marginTop: 24 }} dangerouslySetInnerHTML={{ __html: detail.description }} />
         <div style={{ display: 'flex', flexDirection: 'row', margin: '1rem 0' }}>
           <Typography variant="body2" fontWeight={700}>Appear in:&nbsp;</Typography>
+          {inCollectionList.map((item, index) =>
+            <Link to={`/collection/${item}`} key={item}>
+              <Typography variant="body2" sx={{ textDecoration: 'underline' }}>
+                {item}{index + 1 === inCollectionList.length ? '' : ','}&nbsp;
+              </Typography>
+            </Link>
+          )}
         </div>
         <Button sx={{ margin: '1rem 0' }} onClick={() => {
           setOpen(true);

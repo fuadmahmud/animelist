@@ -1,10 +1,10 @@
 import styled from "@emotion/styled";
 import { Box, Grid, Typography, Button as MUIButton } from "@mui/material";
 import { Link, useParams } from "react-router-dom";
-import { Collection, useLocalStorage } from "../hooks";
 import Button from "../components/Button";
 import { useState } from "react";
 import { removeAnime } from "../utils/helpers";
+import { useLocalStorageCtx } from "../context/LocalStorageContext";
 
 const Wrapper = styled.div`
   padding-top: 80px;
@@ -42,16 +42,14 @@ const TitleWrapper = styled.div`
 
 export default function CollectionDetail() {
   const { id } = useParams();
-  const [collection, setCollection] = useLocalStorage("COLLECTION", {} as Collection); 
+  const { getValue, setValue } = useLocalStorageCtx(); 
+  const collection = getValue();
   const singleCol = id ? collection[id] : {};
   const [openMenu, setOpenMenu] = useState<undefined | number>();
 
   const handleRemove = (index: number) => {
     const newSingleCol = removeAnime(singleCol, index);
-    console.log(newSingleCol);
-    
-
-    setCollection({ ...collection, [id as string]: newSingleCol });
+    setValue({ ...collection, [id as string]: newSingleCol });
   }
   
   return (

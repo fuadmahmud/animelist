@@ -31,3 +31,11 @@ export function removeAnime(singleCol: { [key: string]: DetailAnime }, id: numbe
 
   return singleCol;
 }
+
+export function findInCollection(col: Collection, id: number) {
+  const listAppear: string[] = [];
+
+  Object.keys(col).forEach(key => col[key][id] ? listAppear.push(key) : undefined);
+
+  return listAppear;
+}

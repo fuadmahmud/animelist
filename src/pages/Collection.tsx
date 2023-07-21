@@ -1,5 +1,4 @@
 import styled from "@emotion/styled"
-import { Collection, useLocalStorage } from "../hooks"
 import { Box, Typography, Button as MUIButton, Grid, Modal, Container } from "@mui/material";
 import Button from "../components/Button";
 import { useNavigate } from "react-router-dom";
@@ -9,6 +8,7 @@ import { useState } from "react";
 import TextField from "../components/TextField";
 import { useAlert } from "../context/AlertContext";
 import { EditOutlined, DeleteOutline } from '@mui/icons-material';
+import { useLocalStorageCtx } from "../context/LocalStorageContext";
 
 const Wrapper = styled.div`
   padding-top: 80px;
@@ -27,20 +27,22 @@ const CoverImage = styled.img`
 const REGEX = /^\w+$/;
 
 export default function CollectionPage() {
-  const [collection, setCollection] = useLocalStorage("COLLECTION", {} as Collection);
+  const { setValue, getValue } = useLocalStorageCtx();
   const [openModal, setOpenModal] = useState<"create" | "delete" | "edit" | "">("");
   const [name, setName] = useState("");
   const [oldName, setOldName] = useState("");
   const { setOpenAlert } = useAlert();
   const navigate = useNavigate();
   const error = !REGEX.test(name);
+  const collection = getValue();
+  
   
   const handleSave = () => {
     const available = !findCollection(collection, name);
     if (!available) {
       setOpenAlert(true, { title: 'Failed', severity: 'error', children: `Encounter collection with same name` });
     } else {
-      setCollection({ ...collection, [name]: { } });
+      setValue({ ...collection, [name]: { } });
       setOpenAlert(true, { title: 'Sucess', severity: 'success', children: `Success to create new collection` });
       setOpenModal("");
     }
@@ -49,13 +51,13 @@ export default function CollectionPage() {
   const handleDelete = () => {
     const newCol = removeCollection(collection, name);
 
-    setCollection(newCol);
+    setValue(newCol);
   };
 
   const handleEdit = () => {
     const newCol = editCollection(collection, oldName, name);
-
-    setCollection(newCol)
+    
+    setValue(newCol)
   }
 
   const handleSubmit = () => {
