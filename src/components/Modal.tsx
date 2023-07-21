@@ -30,7 +30,7 @@ export default function Modal() {
   }
 
   const handleSave = (col: string) => {
-    const alreadyInCol = !findAnime(collection, col, item.id);
+    const alreadyInCol = findAnime(collection, col, item.id);
     
     if (alreadyInCol) {
       setOpenAlert(true, { title: 'Failed', severity: 'error', children: `This anime failed to added to ${col} because it's already in it` });
@@ -75,9 +75,9 @@ export default function Modal() {
                   onClick={handleAction}>{isCreate ? 'Create' : 'Create new collection'}</Button>
               </Box>
             </Box>
-          : <Box sx={{ display: 'flex', flexDirection: 'column', justifyContent: 'space-between', height: '100%'}}>{Object.keys(collection).map((col) => 
+          : <Box sx={{ display: 'flex', flexDirection: 'column', height: '100%', overflowY: 'scroll' }}>{Object.keys(collection).map((col) => 
             <MUIButton
-              sx={{ border: '1px solid #0296E5', padding: 2, borderRadius: 1, color: 'white', width: '100%', textTransform: 'uppercase' }}
+              sx={{ border: '1px solid #0296E5', padding: 2, borderRadius: 1, color: 'white', width: '100%', textTransform: 'uppercase', mb: 2 }}
               onClick={() => handleSave(col)}
               key={col}>
                 <Typography variant="body2">{col}</Typography>

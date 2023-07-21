@@ -1,10 +1,15 @@
 import { Collection } from "../hooks";
 import { DetailAnime } from "../pages/Detail";
 
-export function findAnime(col: Collection, colName: string, id?: number) {
-  // return true if col/anime is found in the collection
-  if (id && col[colName][id]) true;
+export function findAnime(col: Collection, colName: string, id: number) {
+  // return true if anime is found in the collection
+  if (col[colName][id]) return true;
+  return false;
+}
+
+export function findCollection(col: Collection, colName: string) {
   if (Object.keys(col[colName] || {}).length) return true;
+
   return false;
 }
 

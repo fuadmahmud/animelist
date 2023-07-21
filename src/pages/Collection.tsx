@@ -3,7 +3,7 @@ import { Collection, useLocalStorage } from "../hooks"
 import { Box, Typography, Button as MUIButton, Grid, Modal, Container } from "@mui/material";
 import Button from "../components/Button";
 import { useNavigate } from "react-router-dom";
-import { editCollection, findAnime, removeCollection } from "../utils/helpers";
+import { editCollection, findCollection, removeCollection } from "../utils/helpers";
 import DefaultCover from "../assets/default-cover.jpg";
 import { useState } from "react";
 import TextField from "../components/TextField";
@@ -36,8 +36,7 @@ export default function CollectionPage() {
   const error = !REGEX.test(name);
   
   const handleSave = () => {
-    const available = !findAnime(collection, name);
-    
+    const available = !findCollection(collection, name);
     if (!available) {
       setOpenAlert(true, { title: 'Failed', severity: 'error', children: `Encounter collection with same name` });
     } else {
@@ -84,12 +83,12 @@ export default function CollectionPage() {
       {Object.keys(collection).length < 1
         ? <Box>
           <Typography variant="h6" fontWeight={700}>You haven't create any collection let's create a new one</Typography>
-          <Button>Create Collection</Button>
+          <Button onClick={() => setOpenModal("create")}>Create Collection</Button>
         </Box>
         : <Container sx={{ display: 'flex', flexDirection: 'column', height: '100%', marginTop: 2, justifyContent: 'space-between' }}>
           <Grid container spacing={0}>
             {Object.keys(collection).map((item, index) => {
-              const isEmpty = !findAnime(collection, item);
+              const isEmpty = !findCollection(collection, item);
               const key = isEmpty ? 0 : parseInt(Object.keys(collection[item])[0]);
               const color = isEmpty ? '#0296E5' : collection[item][key].coverImage.color;
               const image = isEmpty ? DefaultCover : collection[item][key].coverImage.large;
